@@ -1,7 +1,7 @@
-import axios from "axios";
-import { Note } from "../types/note";
+import axios from 'axios';
+import { Note } from '../types/note';
 
-const BASE_URL = "https://notehub-public.goit.study/api";
+const BASE_URL = 'https://notehub-public.goit.study/api';
 
 interface FetchNotesResponse {
   results: Note[];
@@ -10,17 +10,13 @@ interface FetchNotesResponse {
   page: number;
 }
 
-
-
 export const fetchNotes = async (
-  query: string,
-  page = 1
+  page = 1,
+  perPage = 12,
+  search = ''
 ): Promise<FetchNotesResponse> => {
   const response = await axios.get<FetchNotesResponse>(`${BASE_URL}/notes`, {
-    params: {
-      query,
-      page,
-    },
+    params: { page, perPage, search },
     headers: {
       Authorization: `Bearer ${import.meta.env.VITE_NOTEHUB_TOKEN}`,
     },
@@ -28,26 +24,8 @@ export const fetchNotes = async (
   return response.data;
 };
 
-
-
-
-interface CreateNotesResponse {
-  results: Note[];
-  total_pages: number;
-  total_results: number;
-  page: number;
-}
-
-
-export const createNote = async (
-  query: string,
-  page = 1
-): Promise<CreateNotesResponse> => {
-  const response = await axios.post<CreateNotesResponse>(`${BASE_URL}/notes`, {
-    params: {
-      query,
-      page,
-    },
+export const createNote = async (note: Omit<Note, 'id'>): Promise<Note> => {
+  const response = await axios.post<Note>(`${BASE_URL}/notes`, note, {
     headers: {
       Authorization: `Bearer ${import.meta.env.VITE_NOTEHUB_TOKEN}`,
     },
@@ -55,26 +33,10 @@ export const createNote = async (
   return response.data;
 };
 
-
-interface DeleteNotesResponse {
-  results: Note[];
-  total_pages: number;
-  total_results: number;
-  page: number;
-}
-
-export const deleteNote = async (
-  query: string,
-  page = 1
-): Promise<DeleteNotesResponse> => {
-  const response = await axios.delete<DeleteNotesResponse>(`${BASE_URL}/notes/{id}`, {
-    params: {
-      query,
-      page,
-    },
+export const deleteNote = async (id: number): Promise<void> => {
+  await axios.delete(`${BASE_URL}/notes/${id}`, {
     headers: {
       Authorization: `Bearer ${import.meta.env.VITE_NOTEHUB_TOKEN}`,
     },
   });
-  return response.data;
 };

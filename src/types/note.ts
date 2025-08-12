@@ -17,9 +17,38 @@
 //   tag: "Todo";
 // }
 
+// export interface Note {
+//   id: number;
+//   title: string;
+//   content: string;
+//   //   created_at: string;
+// }
+
+
+
+// export interface Note {
+//   id: number;
+//   title: string;
+//   content: string;
+//   tag: 'Todo' | 'Work' | 'Personal' | 'Meeting' | 'Shopping';
+// }
+
+
+
+
+// export type NoteTag = 'Todo' | 'Work' | 'Personal' | 'Meeting' | 'Shopping';
+
+// export interface Note {
+//   id: number;
+//   title: string;
+//   content: string;
+//   tag: NoteTag;
+// }
+
+
 export interface Note {
   id: number;
   title: string;
   content: string;
-  //   created_at: string;
+  tag: 'Todo' | 'Work' | 'Personal' | 'Meeting' | 'Shopping';
 }
