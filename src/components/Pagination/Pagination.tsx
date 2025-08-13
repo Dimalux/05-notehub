@@ -12,12 +12,19 @@ export default function Pagination({
   currentPage,
   onPageChange,
 }: PaginationProps) {
+  const handlePageChange = ({ selected }: { selected: number }) => {
+    const newPage = selected + 1;
+    if (newPage !== currentPage) { // Додано перевірку
+      onPageChange(newPage);
+    }
+  };
+
   return (
     <ReactPaginate
       pageCount={pageCount}
       pageRangeDisplayed={5}
       marginPagesDisplayed={1}
-      onPageChange={({ selected }) => onPageChange(selected + 1)}
+      onPageChange={handlePageChange} // Використовуємо обробник
       forcePage={currentPage - 1}
       containerClassName={styles.pagination}
       activeClassName={styles.active}

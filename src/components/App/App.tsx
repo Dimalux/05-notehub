@@ -10,6 +10,8 @@ import NoteForm from '../NoteForm/NoteForm';
 import styles from './App.module.css';
 
 export default function App() {
+
+  console.log("Рендер App"); // Додано тут
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -42,7 +44,7 @@ export default function App() {
   const createMutation = useMutation({
     mutationFn: createNote,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['notes'] });
+      queryClient.invalidateQueries({ queryKey: ['notes', page, searchQuery]  });
       toast.success('Note created successfully!');
       setIsModalOpen(false);
     },
@@ -55,7 +57,7 @@ export default function App() {
   const deleteMutation = useMutation({
     mutationFn: (id: string) => deleteNote(id), // Явно вказуємо тип string для id
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['notes'] });
+      queryClient.invalidateQueries({ queryKey: ['notes', page, searchQuery]  });
       toast.success('Note deleted successfully!');
     },
     onError: (err: Error) => {
@@ -85,13 +87,13 @@ export default function App() {
       <header className={styles.toolbar}>
         <SearchBox onSearch={(query) => {
           setSearchQuery(query);
-          setPage(1);
+         
         }} />
         
         
         {hasNotes && data?.totalPages && data.totalPages > 1 && (
           <Pagination
-                        pageCount={data.totalPages}  // Зверніть увагу: totalPages, не total_pages
+                        pageCount={data.totalPages} 
             currentPage={page}
             onPageChange={(selectedPage) => setPage(selectedPage)}
           />

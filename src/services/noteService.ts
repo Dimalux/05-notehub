@@ -4,18 +4,22 @@ import { NotesResponse } from '../types/note';
 
 const BASE_URL = 'https://notehub-public.goit.study/api';
 
-// interface NotesResponse {
-//   notes: Note[];
-//   total_pages: number;
-//   total_results: number;
-//   page: number;
-// }
+// Захисник від подвійних запитів
+let lastRequestTime = 0;
+const REQUEST_DELAY = 500; // мс
 
 export const fetchNotes = async (
   page = 1,
   perPage = 12,
   search = ''
 ): Promise<NotesResponse> => {
+  const now = Date.now();
+  if (now - lastRequestTime < REQUEST_DELAY) {
+    console.log('Запит відхилено: занадто швидко після попереднього');
+    throw new Error('Request too fast');
+  }
+  lastRequestTime = now;
+
   try {
     const response = await axios.get<NotesResponse>(`${BASE_URL}/notes`, {
       params: { page, perPage, search },
@@ -23,10 +27,15 @@ export const fetchNotes = async (
         Authorization: `Bearer ${import.meta.env.VITE_NOTEHUB_TOKEN}`,
       },
     });
-    console.log('API Response:', response.data); // Додано для налагодження
+
+    console.log('=== Успішний запит ===');
+    console.log('Сторінка:', page);
+    console.log('Нотаток:', response.data.notes.length);
+    console.log('Всього сторінок:', response.data.totalPages);
+
     return response.data;
   } catch (error) {
-    console.error('Error fetching notes:', error);
+    console.error('Помилка запиту:', error);
     throw error;
   }
 };
@@ -40,11 +49,10 @@ export const createNote = async (note: Omit<Note, 'id'>): Promise<Note> => {
     });
     return response.data;
   } catch (error) {
-    console.error('Error creating note:', error);
+    console.error('Помилка створення:', error);
     throw error;
   }
 };
-
 
 export const deleteNote = async (id: string): Promise<void> => {
   try {
@@ -54,7 +62,7 @@ export const deleteNote = async (id: string): Promise<void> => {
       },
     });
   } catch (error) {
-    console.error('Error deleting note:', error);
+    console.error('Помилка видалення:', error);
     throw error;
   }
 };
