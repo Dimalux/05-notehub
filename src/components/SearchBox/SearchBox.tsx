@@ -1,26 +1,46 @@
-import { useState, useEffect } from 'react';
-import { useDebounce } from 'use-debounce';
-import styles from './SearchBox.module.css';
+import { useState, useEffect, useRef } from "react";
+import styles from "./SearchBox.module.css";
 
 interface SearchBoxProps {
   onSearch: (query: string) => void;
+  initialQuery?: string; // Додано новий пропс
 }
 
-export default function SearchBox({ onSearch }: SearchBoxProps) {
-  const [query, setQuery] = useState('');
-  const [debouncedQuery] = useDebounce(query, 500);
+export default function SearchBox({
+  onSearch,
+  initialQuery = "",
+}: SearchBoxProps) {
+  const [query, setQuery] = useState(initialQuery); // Використовуємо initialQuery
+  const timerRef = useRef<number | null>(null);
+
+  // Синхронізуємо зовнішній стан при зміні initialQuery
+  useEffect(() => {
+    setQuery(initialQuery);
+  }, [initialQuery]);
 
   useEffect(() => {
-    onSearch(debouncedQuery);
-  }, [debouncedQuery, onSearch]);
+    if (timerRef.current !== null) {
+      clearTimeout(timerRef.current);
+    }
+
+    timerRef.current = window.setTimeout(() => {
+      onSearch(query);
+    }, 600);
+
+    return () => {
+      if (timerRef.current !== null) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, [query, onSearch]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
   };
 
   const handleClear = () => {
-    setQuery('');
-    onSearch('');
+    setQuery("");
+    onSearch("");
   };
 
   return (

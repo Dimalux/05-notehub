@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 import { Toaster, toast } from 'react-hot-toast';
 import { fetchNotes, createNote, deleteNote } from '../../services/noteService';
 import NoteList from '../NoteList/NoteList';
@@ -27,6 +27,7 @@ export default function App() {
     queryKey: ['notes', page, searchQuery],
     queryFn: () => fetchNotes(page, 12, searchQuery),
     retry: 2,
+    placeholderData: keepPreviousData,
   });
 
   useEffect(() => {
