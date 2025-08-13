@@ -46,9 +46,28 @@
 // }
 
 
+// export interface Note {
+//   id: number;
+//   title: string;
+//   content: string;
+//   // tag: 'Todo' | 'Work' | 'Personal' | 'Meeting' | 'Shopping';
+// tag: string;
+
+// }
+
+
 export interface Note {
-  id: number;
+  id: string;
   title: string;
   content: string;
-  tag: 'Todo' | 'Work' | 'Personal' | 'Meeting' | 'Shopping';
+  tag: string;
+  createdAt?: string; // Додано "?" (optional)
+  updatedAt?: string; // Додано "?" (optional)
+}
+
+export interface NotesResponse {
+  notes: Note[];
+  total_pages: number;
+  total_results: number;
+  page: number;
 }
