@@ -1,14 +1,15 @@
 import axios from 'axios';
 import { Note } from '../types/note';
+import { NotesResponse } from '../types/note';
 
 const BASE_URL = 'https://notehub-public.goit.study/api';
 
-interface NotesResponse {
-  notes: Note[];
-  total_pages: number;
-  total_results: number;
-  page: number;
-}
+// interface NotesResponse {
+//   notes: Note[];
+//   total_pages: number;
+//   total_results: number;
+//   page: number;
+// }
 
 export const fetchNotes = async (
   page = 1,

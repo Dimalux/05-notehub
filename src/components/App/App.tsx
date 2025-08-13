@@ -87,9 +87,11 @@ export default function App() {
           setSearchQuery(query);
           setPage(1);
         }} />
-        {hasNotes && data?.total_pages && data.total_pages > 1 && (
+        
+        
+        {hasNotes && data?.totalPages && data.totalPages > 1 && (
           <Pagination
-            pageCount={data.total_pages}
+                        pageCount={data.totalPages}  // Зверніть увагу: totalPages, не total_pages
             currentPage={page}
             onPageChange={(selectedPage) => setPage(selectedPage)}
           />

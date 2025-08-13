@@ -67,7 +67,10 @@ export interface Note {
 
 export interface NotesResponse {
   notes: Note[];
-  total_pages: number;
+  // total_pages: number;
+
+totalPages: number;  // Тепер відповідає API
+
   total_results: number;
   page: number;
 }
