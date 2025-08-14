@@ -8,10 +8,8 @@ export interface Note {
 }
 
 export interface NotesResponse {
-  notes: Note[];
- 
-totalPages: number;  // Тепер відповідає API
-
+  notes: Note[]; 
+  totalPages: number;  // Тепер відповідає API
   total_results: number;
   page: number;
 }

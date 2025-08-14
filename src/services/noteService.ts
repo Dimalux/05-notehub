@@ -1,8 +1,7 @@
-import axios from 'axios';
-import { Note } from '../types/note';
-import { NotesResponse } from '../types/note';
+import axios from "axios";
+import { Note, NotesResponse } from "../types/note";
 
-const BASE_URL = 'https://notehub-public.goit.study/api';
+const BASE_URL = "https://notehub-public.goit.study/api";
 
 // Захисник від подвійних запитів
 let lastRequestTime = 0;
@@ -11,12 +10,12 @@ const REQUEST_DELAY = 500; // мс
 export const fetchNotes = async (
   page = 1,
   perPage = 12,
-  search = ''
+  search = ""
 ): Promise<NotesResponse> => {
   const now = Date.now();
   if (now - lastRequestTime < REQUEST_DELAY) {
-    console.log('Запит відхилено: занадто швидко після попереднього');
-    throw new Error('Request too fast');
+    console.log("Запит відхилено: занадто швидко після попереднього");
+    throw new Error("Request too fast");
   }
   lastRequestTime = now;
 
@@ -28,19 +27,14 @@ export const fetchNotes = async (
       },
     });
 
-    console.log('=== Успішний запит ===');
-    console.log('Сторінка:', page);
-    console.log('Нотаток:', response.data.notes.length);
-    console.log('Всього сторінок:', response.data.totalPages);
-
     return response.data;
   } catch (error) {
-    console.error('Помилка запиту:', error);
+    console.error("Помилка запиту:", error);
     throw error;
   }
 };
 
-export const createNote = async (note: Omit<Note, 'id'>): Promise<Note> => {
+export const createNote = async (note: Omit<Note, "id">): Promise<Note> => {
   try {
     const response = await axios.post<Note>(`${BASE_URL}/notes`, note, {
       headers: {
@@ -49,7 +43,7 @@ export const createNote = async (note: Omit<Note, 'id'>): Promise<Note> => {
     });
     return response.data;
   } catch (error) {
-    console.error('Помилка створення:', error);
+    console.error("Помилка створення:", error);
     throw error;
   }
 };
@@ -62,7 +56,7 @@ export const deleteNote = async (id: string): Promise<void> => {
       },
     });
   } catch (error) {
-    console.error('Помилка видалення:', error);
+    console.error("Помилка видалення:", error);
     throw error;
   }
 };

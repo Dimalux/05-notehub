@@ -1,17 +1,17 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import styles from "./SearchBox.module.css";
 
 interface SearchBoxProps {
   onSearch: (query: string) => void;
-  initialQuery?: string; // Додано новий пропс
+  initialQuery?: string;
 }
 
 export default function SearchBox({
   onSearch,
   initialQuery = "",
 }: SearchBoxProps) {
-  const [query, setQuery] = useState(initialQuery); // Використовуємо initialQuery
-  const timerRef = useRef<number | null>(null);
+  const [query, setQuery] = useState(initialQuery);
+  let timerId: number | null = null;
 
   // Синхронізуємо зовнішній стан при зміні initialQuery
   useEffect(() => {
@@ -19,17 +19,20 @@ export default function SearchBox({
   }, [initialQuery]);
 
   useEffect(() => {
-    if (timerRef.current !== null) {
-      clearTimeout(timerRef.current);
+    // Очищаємо попередній таймер, якщо він існує
+    if (timerId !== null) {
+      clearTimeout(timerId);
     }
 
-    timerRef.current = window.setTimeout(() => {
+    // Встановлюємо новий таймер
+    timerId = window.setTimeout(() => {
       onSearch(query);
     }, 600);
 
+    // Функція очищення для видалення таймера
     return () => {
-      if (timerRef.current !== null) {
-        clearTimeout(timerRef.current);
+      if (timerId !== null) {
+        clearTimeout(timerId);
       }
     };
   }, [query, onSearch]);
