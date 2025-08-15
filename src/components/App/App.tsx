@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useDebounce } from "use-debounce";
 import {
   useQuery,
   useMutation,
@@ -17,12 +18,13 @@ import styles from "./App.module.css";
 export default function App() {
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearchQuery] = useDebounce(searchQuery, 500); // Відкладене значення пошуку
   const [isModalOpen, setIsModalOpen] = useState(false);
   const queryClient = useQueryClient();
 
   const { data, isLoading, isError, isSuccess, error } = useQuery({
-    queryKey: ["notes", page, searchQuery],
-    queryFn: () => fetchNotes(page, 12, searchQuery),
+    queryKey: ["notes", page, debouncedSearchQuery], // Використовуємо debouncedSearchQuery замість searchQuery
+    queryFn: () => fetchNotes(page, 12, debouncedSearchQuery),
     retry: 2,
     placeholderData: keepPreviousData,
   });

@@ -1,11 +1,18 @@
 import axios from "axios";
-import { Note, NotesResponse } from "../types/note";
+import { Note, NewNote } from "../types/note";
 
 const BASE_URL = "https://notehub-public.goit.study/api";
 
 // Захисник від подвійних запитів
 let lastRequestTime = 0;
 const REQUEST_DELAY = 500; // мс
+
+interface NotesResponse {
+  notes: Note[];
+  totalPages: number; // Тепер відповідає API
+  total_results: number;
+  page: number;
+}
 
 export const fetchNotes = async (
   page = 1,
@@ -34,7 +41,7 @@ export const fetchNotes = async (
   }
 };
 
-export const createNote = async (note: Omit<Note, "id">): Promise<Note> => {
+export const createNote = async (note: NewNote): Promise<Note> => {
   try {
     const response = await axios.post<Note>(`${BASE_URL}/notes`, note, {
       headers: {
