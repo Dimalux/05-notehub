@@ -1,13 +1,8 @@
 import { useState, useEffect } from "react";
 import { useDebounce } from "use-debounce";
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-  keepPreviousData,
-} from "@tanstack/react-query";
-import { Toaster, toast } from "react-hot-toast";
-import { fetchNotes, createNote } from "../../services/noteService";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
+import { Toaster } from "react-hot-toast";
+import { fetchNotes } from "../../services/noteService";
 import NoteList from "../NoteList/NoteList";
 import SearchBox from "../SearchBox/SearchBox";
 import Pagination from "../Pagination/Pagination";
@@ -18,9 +13,8 @@ import styles from "./App.module.css";
 export default function App() {
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
-  const [debouncedSearchQuery] = useDebounce(searchQuery, 500); // Відкладене значення пошуку
+  const [debouncedSearchQuery] = useDebounce(searchQuery, 500);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const queryClient = useQueryClient();
 
   const { data, isLoading, isError, isSuccess, error } = useQuery({
     queryKey: ["notes", page, debouncedSearchQuery],
@@ -41,23 +35,19 @@ export default function App() {
     }
   }, [isSuccess, isError, data, error]);
 
-  // Додано новий useEffect для скидання сторінки при зміні пошукового запиту
   useEffect(() => {
     setPage(1);
   }, [debouncedSearchQuery]);
 
-  const createMutation = useMutation({
-    mutationFn: createNote,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["notes", page, searchQuery] });
-      toast.success("Note created successfully!");
-      setIsModalOpen(false);
-    },
-    onError: (err: Error) => {
-      toast.error("Failed to create note");
-      console.error("Create note error:", err);
-    },
-  });
+  const handleOpenModal = () => {
+    console.log("Opening modal");
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    console.log("Closing modal");
+    setIsModalOpen(false);
+  };
 
   if (isLoading) {
     return <div className={styles.loading}>Loading...</div>;
@@ -91,7 +81,11 @@ export default function App() {
             onPageChange={(selectedPage) => setPage(selectedPage)}
           />
         )}
-        <button className={styles.button} onClick={() => setIsModalOpen(true)}>
+        <button
+          className={styles.button}
+          onClick={handleOpenModal}
+          data-testid="create-note-button"
+        >
           Create note +
         </button>
       </header>
@@ -105,11 +99,8 @@ export default function App() {
       </main>
 
       {isModalOpen && (
-        <Modal onClose={() => setIsModalOpen(false)}>
-          <NoteForm
-            onSubmit={(values) => createMutation.mutate(values)}
-            onCancel={() => setIsModalOpen(false)}
-          />
+        <Modal onClose={handleCloseModal}>
+          <NoteForm onCancel={handleCloseModal} />
         </Modal>
       )}
     </div>
