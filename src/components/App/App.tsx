@@ -7,7 +7,7 @@ import {
   keepPreviousData,
 } from "@tanstack/react-query";
 import { Toaster, toast } from "react-hot-toast";
-import { fetchNotes, createNote, deleteNote } from "../../services/noteService";
+import { fetchNotes, createNote } from "../../services/noteService";
 import NoteList from "../NoteList/NoteList";
 import SearchBox from "../SearchBox/SearchBox";
 import Pagination from "../Pagination/Pagination";
@@ -41,13 +41,10 @@ export default function App() {
     }
   }, [isSuccess, isError, data, error]);
 
-
- // Додано новий useEffect для скидання сторінки при зміні пошукового запиту
+  // Додано новий useEffect для скидання сторінки при зміні пошукового запиту
   useEffect(() => {
     setPage(1);
   }, [debouncedSearchQuery]);
-
-
 
   const createMutation = useMutation({
     mutationFn: createNote,
@@ -59,18 +56,6 @@ export default function App() {
     onError: (err: Error) => {
       toast.error("Failed to create note");
       console.error("Create note error:", err);
-    },
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: (id: string) => deleteNote(id), // Явно вказуємо тип string для id
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["notes", page, searchQuery] });
-      toast.success("Note deleted successfully!");
-    },
-    onError: (err: Error) => {
-      toast.error("Failed to delete note");
-      console.error("Delete note error:", err);
     },
   });
 
@@ -113,10 +98,7 @@ export default function App() {
 
       <main>
         {hasNotes ? (
-          <NoteList
-            notes={data?.notes || []}
-            onDelete={(id: string) => deleteMutation.mutate(id)} // Тип string для id
-          />
+          <NoteList notes={data?.notes || []} />
         ) : (
           <div className={styles.empty}>No notes found</div>
         )}
