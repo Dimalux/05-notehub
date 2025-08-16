@@ -23,7 +23,7 @@ export default function App() {
   const queryClient = useQueryClient();
 
   const { data, isLoading, isError, isSuccess, error } = useQuery({
-    queryKey: ["notes", page, debouncedSearchQuery], // Використовуємо debouncedSearchQuery замість searchQuery
+    queryKey: ["notes", page, debouncedSearchQuery],
     queryFn: () => fetchNotes(page, 12, debouncedSearchQuery),
     retry: 2,
     placeholderData: keepPreviousData,
@@ -40,6 +40,14 @@ export default function App() {
       console.error("Error fetching notes:", error);
     }
   }, [isSuccess, isError, data, error]);
+
+
+ // Додано новий useEffect для скидання сторінки при зміні пошукового запиту
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearchQuery]);
+
+
 
   const createMutation = useMutation({
     mutationFn: createNote,

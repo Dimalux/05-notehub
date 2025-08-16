@@ -1,30 +1,29 @@
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-import styles from './NoteForm.module.css';
-import { Note } from '../../types/note'; 
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import styles from "./NoteForm.module.css";
+import { Note } from "../../types/note";
 
 interface NoteFormProps {
-  onSubmit: (values: Omit<Note, 'id'>) => void;
+  onSubmit: (values: Omit<Note, "id" | "createdAt" | "updatedAt">) => void;
   onCancel: () => void;
 }
 
 const validationSchema = Yup.object({
   title: Yup.string()
-    .min(3, 'Title must be at least 3 characters')
-    .max(50, 'Title must be at most 50 characters')
-    .required('Title is required'),
-  content: Yup.string()
-    .max(500, 'Content must be at most 500 characters'),
+    .min(3, "Title must be at least 3 characters")
+    .max(50, "Title must be at most 50 characters")
+    .required("Title is required"),
+  content: Yup.string().max(500, "Content must be at most 500 characters"),
   tag: Yup.string()
-    .oneOf(['Todo', 'Work', 'Personal', 'Meeting', 'Shopping'], 'Invalid tag')
-    .required('Tag is required'),
+    .oneOf(["Todo", "Work", "Personal", "Meeting", "Shopping"], "Invalid tag")
+    .required("Tag is required"),
 });
 
 export default function NoteForm({ onSubmit, onCancel }: NoteFormProps) {
-  const initialValues: Omit<Note, 'id'> = {
-    title: '',
-    content: '',
-    tag: 'Todo',
+  const initialValues: Omit<Note, "id" | "createdAt" | "updatedAt"> = {
+    title: "",
+    content: "",
+    tag: "Todo",
   };
 
   return (
@@ -46,7 +45,11 @@ export default function NoteForm({ onSubmit, onCancel }: NoteFormProps) {
               name="title"
               className={styles.input}
             />
-            <ErrorMessage name="title" component="span" className={styles.error} />
+            <ErrorMessage
+              name="title"
+              component="span"
+              className={styles.error}
+            />
           </div>
 
           <div className={styles.formGroup}>
@@ -58,7 +61,11 @@ export default function NoteForm({ onSubmit, onCancel }: NoteFormProps) {
               rows={8}
               className={styles.textarea}
             />
-            <ErrorMessage name="content" component="span" className={styles.error} />
+            <ErrorMessage
+              name="content"
+              component="span"
+              className={styles.error}
+            />
           </div>
 
           <div className={styles.formGroup}>
@@ -70,7 +77,11 @@ export default function NoteForm({ onSubmit, onCancel }: NoteFormProps) {
               <option value="Meeting">Meeting</option>
               <option value="Shopping">Shopping</option>
             </Field>
-            <ErrorMessage name="tag" component="span" className={styles.error} />
+            <ErrorMessage
+              name="tag"
+              component="span"
+              className={styles.error}
+            />
           </div>
 
           <div className={styles.actions}>

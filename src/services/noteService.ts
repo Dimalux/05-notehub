@@ -9,9 +9,7 @@ const REQUEST_DELAY = 500; // мс
 
 interface NotesResponse {
   notes: Note[];
-  totalPages: number; // Тепер відповідає API
-  total_results: number;
-  page: number;
+  totalPages: number; 
 }
 
 export const fetchNotes = async (
@@ -55,13 +53,14 @@ export const createNote = async (note: NewNote): Promise<Note> => {
   }
 };
 
-export const deleteNote = async (id: string): Promise<void> => {
+export const deleteNote = async (id: string): Promise<Note> => {
   try {
-    await axios.delete(`${BASE_URL}/notes/${id}`, {
+    const response = await axios.delete<Note>(`${BASE_URL}/notes/${id}`, {
       headers: {
         Authorization: `Bearer ${import.meta.env.VITE_NOTEHUB_TOKEN}`,
       },
     });
+    return response.data;
   } catch (error) {
     console.error("Помилка видалення:", error);
     throw error;
