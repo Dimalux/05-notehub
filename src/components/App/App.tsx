@@ -35,9 +35,11 @@ export default function App() {
     }
   }, [isSuccess, isError, data, error]);
 
-  useEffect(() => {
-    setPage(1);
-  }, [debouncedSearchQuery]);
+
+useEffect(() => {
+  setPage(1);
+}, [searchQuery]); 
+ 
 
   const handleOpenModal = () => {
     console.log("Opening modal");
